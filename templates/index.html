@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Auto-completer</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input { width: 300px; padding: 8px; font-size: 16px; }
+        ul { list-style-type: none; padding-left: 0; }
+        li { padding: 4px 0; }
+    </style>
+</head>
+<body>
+    <h2>Auto-completer</h2>
+    <input type="text" id="autocomplete" placeholder="Start typing..." autocomplete="off" />
+    <ul id="suggestions"></ul>
+
+    <script>
+        const input = document.getElementById('autocomplete');
+        const suggestionBox = document.getElementById('suggestions');
+
+        input.addEventListener('input', async () => {
+            const prefix = input.value;
+            if (prefix.length === 0) {
+                suggestionBox.innerHTML = '';
+                return;
+            }
+
+            const response = await fetch(`/autocomplete?prefix=${prefix}`);
+            const suggestions = await response.json();
+
+            suggestionBox.innerHTML = '';
+            suggestions.forEach(word => {
+                const li = document.createElement('li');
+                li.textContent = word;
+                suggestionBox.appendChild(li);
+            });
+        });
+
+        input.addEventListener('keydown', async (event) => {
+            if (event.key === 'Enter') {
+                const word = input.value.trim();
+                if (word !== '') {
+                    await fetch('/check_and_add', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ word: word })
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
