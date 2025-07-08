@@ -29,4 +29,4 @@ class Trie:
             node = node.children[ch]
         result = []
         self._dfs(node, prefix, result)
-        return result
+        return result[:10]

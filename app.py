@@ -42,5 +42,5 @@ def check_and_add():
 
 
 if __name__ == '__main__':
-    print("🚀 Server is starting...")
+    print("Server is starting...")
     app.run(debug=True)
